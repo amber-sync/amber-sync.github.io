@@ -1,42 +1,93 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --accents-1: #fafafa;
-  --accents-2: #eaeaea;
-  --accents-3: #999999;
-  --accents-4: #888888;
-  --accents-5: #666666;
-  --accents-6: #444444;
-  --accents-7: #333333;
-  --accents-8: #111111;
-  --success: #0070f3;
-  --error: #ee0000;
-  --warning: #f5a623;
+  --bg-primary: #0a0b0f;
+  --bg-secondary: #0f1117;
+  --bg-tertiary: #161922;
+  --bg-card: #12141c;
+  --border: #1e2230;
+  --border-highlight: #2a3040;
+  --text-primary: #e4e4e7;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  --text-muted: #4b5563;
+  --accent: #e8ad3e;
+  --accent-dim: #c48a1a;
+  --accent-glow: rgba(232, 173, 62, 0.12);
+  --green: #4ade80;
+  --green-dim: rgba(74, 222, 128, 0.15);
+  --blue: #60a5fa;
+  --orange: #fb923c;
+  --red: #f87171;
+  --mono: var(--font-geist-mono), 'SF Mono', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+  --sans: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --accents-1: #111111;
-    --accents-2: #333333;
-    --accents-3: #444444;
-    --accents-4: #666666;
-    --accents-5: #888888;
-    --accents-6: #999999;
-    --accents-7: #eaeaea;
-    --accents-8: #fafafa;
-  }
-}
+* { box-sizing: border-box; }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+/* Noise overlay */
+.noise-bg {
+  position: relative;
+}
+.noise-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center center;
+}
+
+/* Glow effects */
+.glow-amber { box-shadow: 0 0 60px -12px rgba(232, 173, 62, 0.15); }
+.glow-line { background: linear-gradient(90deg, transparent, var(--accent), transparent); height: 1px; }
+
+/* Terminal typing animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.cursor-blink::after {
+  content: '█';
+  animation: blink 1s infinite;
+  color: var(--accent);
+  margin-left: 2px;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+.fade-in-up-1 { animation-delay: 0s; }
+.fade-in-up-2 { animation-delay: 0.1s; }
+.fade-in-up-3 { animation-delay: 0.2s; }
+.fade-in-up-4 { animation-delay: 0.3s; }
+.fade-in-up-5 { animation-delay: 0.4s; }
+.fade-in-up-6 { animation-delay: 0.5s; }

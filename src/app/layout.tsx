@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Amber - Modern Rsync Backup",
-  description: "A beautiful, native macOS interface for Rsync backups.",
+  title: "Amber — rsync backups for macOS",
+  description: "Time Machine-style incremental backups powered by rsync. Open source, native, fast.",
+  openGraph: {
+    title: "Amber — rsync backups for macOS",
+    description: "Time Machine-style incremental backups powered by rsync. Open source, native, fast.",
+    type: "website",
+    url: "https://amber-sync.github.io",
+  },
 };
 
 export default function RootLayout({

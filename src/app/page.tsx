@@ -1,92 +1,113 @@
 import Link from "next/link";
-import { HardDrive, Clock, Zap, Shield } from "lucide-react";
+import { Github, Download, Star } from "lucide-react";
 import { Hero } from "@/components/Hero";
-import { FeatureCard } from "@/components/FeatureCard";
-import { ComparisonTable } from "@/components/ComparisonTable";
-import { FAQ } from "@/components/FAQ";
+import { AppShowcase } from "@/components/AppShowcase";
+import { FeatureGrid } from "@/components/FeatureGrid";
+import { HowItWorks } from "@/components/HowItWorks";
 import { APP_VERSION } from "@/lib/version";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col font-[family-name:var(--font-geist-sans)] bg-background text-foreground overflow-x-hidden">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 dark:border-gray-800/50 bg-background/80 backdrop-blur-md">
-        <div className="w-full max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-          <div className="text-xl font-bold tracking-tight flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center font-bold text-lg">
-              A
-            </div>
-            Amber
-          </div>
-          <nav className="hidden md:flex gap-8 text-sm font-medium text-gray-500 dark:text-gray-400">
-            <Link href="#features" className="hover:text-foreground transition-colors">Features</Link>
-            <Link href="/docs" className="hover:text-foreground transition-colors">Docs</Link>
-            <Link href="#download" className="hover:text-foreground transition-colors">Download</Link>
-            <Link href="https://github.com/amber-sync/amber" className="hover:text-foreground transition-colors">GitHub</Link>
+    <div className="min-h-screen flex flex-col" style={{ fontFamily: 'var(--sans)' }}>
+      {/* Nav */}
+      <header className="fixed top-0 left-0 right-0 z-50 border-b" style={{ borderColor: 'var(--border)', background: 'rgba(10, 11, 15, 0.85)', backdropFilter: 'blur(12px)' }}>
+        <div className="max-w-6xl mx-auto px-6 h-14 flex justify-between items-center">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--bg-primary)' }}>A</div>
+            <span className="font-semibold text-sm tracking-tight" style={{ color: 'var(--text-primary)' }}>amber</span>
+            <span className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ color: 'var(--text-tertiary)', background: 'var(--bg-tertiary)' }}>v{APP_VERSION}</span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-6">
+            <NavLink href="#features">Features</NavLink>
+            <NavLink href="#how-it-works">How it works</NavLink>
+            <NavLink href="/docs">Docs</NavLink>
+            <Link
+              href="https://github.com/amber-sync/amber"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-sm transition-colors"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <Github size={15} />
+              <span>GitHub</span>
+            </Link>
           </nav>
         </div>
       </header>
 
-      <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-16">
+      <main className="flex-grow pt-14">
         <Hero />
 
-        {/* Features Grid */}
-        <section id="features" className="w-full max-w-7xl mx-auto py-24 border-t border-gray-100 dark:border-gray-900">
-          <div className="mb-16 text-center max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold tracking-tight mb-4">Everything you need</h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Powerful features wrapped in a simple, elegant interface designed for macOS.
+        {/* Glow divider */}
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="glow-line" />
+        </div>
+
+        <AppShowcase />
+
+        <FeatureGrid />
+
+        <HowItWorks />
+
+        {/* CTA */}
+        <section className="py-32 px-6 text-center relative">
+          <div className="absolute inset-0 grid-bg opacity-30" />
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4" style={{ color: 'var(--text-primary)' }}>
+              Ready to stop losing files?
+            </h2>
+            <p className="text-base mb-8" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--mono)' }}>
+              Free. Open source. No account required.
             </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <FeatureCard 
-              icon={<HardDrive />}
-              title="Rsync Power"
-              description="Built on the industry-standard Rsync protocol for fast, reliable, and efficient file transfers."
-              delay={0.1}
-            />
-            <FeatureCard 
-              icon={<Clock />}
-              title="Time Machine"
-              description="Create incremental snapshots that look like full backups but use a fraction of the space."
-              delay={0.2}
-            />
-            <FeatureCard 
-              icon={<Zap />}
-              title="Background Sync"
-              description="Runs quietly in the background. Set it and forget it with customizable schedules."
-              delay={0.3}
-            />
-            <FeatureCard 
-              icon={<Shield />}
-              title="Privacy First"
-              description="Your data never leaves your devices. No cloud, no tracking, just your files."
-              delay={0.4}
-            />
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="https://github.com/amber-sync/amber/releases"
+                target="_blank"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm transition-all hover:brightness-110"
+                style={{ background: 'var(--accent)', color: 'var(--bg-primary)' }}
+              >
+                <Download size={16} />
+                Download
+              </Link>
+              <Link
+                href="https://github.com/amber-sync/amber"
+                target="_blank"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm border transition-colors"
+                style={{ borderColor: 'var(--border-highlight)', color: 'var(--text-secondary)' }}
+              >
+                <Star size={16} />
+                Star on GitHub
+              </Link>
+            </div>
           </div>
         </section>
-
-        {/* Comparison Table */}
-        <ComparisonTable />
-
-        {/* FAQ */}
-        <FAQ />
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-gray-100 dark:border-gray-900 py-12 bg-gray-50/50 dark:bg-gray-900/20">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Amber v{APP_VERSION} · All rights reserved
+      <footer className="border-t px-6 py-8" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4" style={{ fontFamily: 'var(--mono)' }}>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>amber v{APP_VERSION}</span>
+            <span style={{ color: 'var(--border)' }}>·</span>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>MIT License</span>
+            <span style={{ color: 'var(--border)' }}>·</span>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Built with Tauri + Rust</span>
           </div>
-          <div className="flex gap-6 text-sm text-gray-500">
-            <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
-            <Link href="https://github.com/amber-sync/amber" className="hover:text-foreground transition-colors">GitHub</Link>
+          <div className="flex items-center gap-4">
+            <Link href="https://github.com/amber-sync/amber" target="_blank" className="text-xs transition-colors" style={{ color: 'var(--text-tertiary)' }}>
+              <Github size={16} />
+            </Link>
           </div>
         </div>
       </footer>
     </div>
+  );
+}
+
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="text-sm transition-colors hover:brightness-125" style={{ color: 'var(--text-tertiary)' }}>
+      {children}
+    </Link>
   );
 }

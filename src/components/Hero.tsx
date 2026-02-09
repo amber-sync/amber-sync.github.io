@@ -1,18 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Download, Loader2 } from "lucide-react";
+import { Download, Github, ArrowRight } from "lucide-react";
 import { APP_VERSION } from "@/lib/version";
 import { useEffect, useState } from "react";
-import { AppPreview } from "./AppPreview";
-
-interface ReleaseInfo {
-  version: string;
-  downloadUrl: string | null;
-  fallback?: boolean;
-  fallbackUrl?: string;
-}
 
 interface GitHubAsset {
   name: string;
@@ -24,144 +15,90 @@ interface GitHubRelease {
   assets: GitHubAsset[];
 }
 
-const FALLBACK_RELEASE: ReleaseInfo = {
-  version: APP_VERSION,
-  downloadUrl: null,
-  fallback: true,
-  fallbackUrl: 'https://github.com/amber-sync/amber/releases',
-};
-
 export function Hero() {
-  const [release, setRelease] = useState<ReleaseInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [downloadUrl, setDownloadUrl] = useState<string>(
+    'https://github.com/amber-sync/amber/releases'
+  );
 
   useEffect(() => {
     fetch('https://api.github.com/repos/amber-sync/amber/releases/latest', {
       headers: { 'Accept': 'application/vnd.github.v3+json' },
     })
       .then(res => {
-        if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+        if (!res.ok) throw new Error('no release');
         return res.json();
       })
       .then((data: GitHubRelease) => {
-        const dmg = data.assets.find(a => a.name.endsWith('.dmg') && a.name.includes('universal'))
-          || data.assets.find(a => a.name.endsWith('.dmg') && a.name.includes('arm64'))
-          || data.assets.find(a => a.name.endsWith('.dmg'));
-        setRelease({
-          version: data.tag_name.replace(/^v/, ''),
-          downloadUrl: dmg?.browser_download_url ?? null,
-          fallback: !dmg,
-          fallbackUrl: 'https://github.com/amber-sync/amber/releases',
-        });
-        setLoading(false);
+        const asset = data.assets.find(a => a.name.endsWith('.dmg'))
+          || data.assets.find(a => a.name.endsWith('.msi'))
+          || data.assets.find(a => a.name.endsWith('.AppImage'))
+          || data.assets[0];
+        if (asset) setDownloadUrl(asset.browser_download_url);
       })
-      .catch(() => {
-        setRelease(FALLBACK_RELEASE);
-        setLoading(false);
-      });
+      .catch(() => {});
   }, []);
 
-  const downloadUrl = release?.downloadUrl || release?.fallbackUrl || '#download';
-  const isExternalLink = downloadUrl.startsWith('http');
-
   return (
-    <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-24">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8 flex justify-center"
-        >
-          <span className="rounded-full bg-gray-100 dark:bg-gray-800/50 backdrop-blur-sm px-3 py-1 text-sm text-gray-600 dark:text-gray-300 ring-1 ring-inset ring-gray-500/10">
-            v{APP_VERSION}
-          </span>
-        </motion.div>
+    <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 px-6 overflow-hidden noise-bg">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%)' }} />
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl sm:text-7xl font-bold tracking-tight mb-8 text-balance"
-        >
-          Backup your life, <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-b from-black to-gray-400 dark:from-white dark:to-gray-400">
-            simply and securely.
-          </span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mb-12 max-w-2xl mx-auto text-balance"
-        >
-          Amber brings the power of Rsync to a beautiful, native macOS interface.
-          Time Machine-style snapshots, background syncing, and zero config
-          required.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
-        >
-          {isExternalLink ? (
-            <a
-              href={downloadUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="h-12 px-8 rounded-full bg-foreground text-background font-medium flex items-center gap-2 hover:opacity-90 transition-opacity"
-            >
-              {loading ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" />
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <Download size={20} />
-                  Download v{release?.version || APP_VERSION}
-                </>
-              )}
-            </a>
-          ) : (
-            <Link
-              href={downloadUrl}
-              className="h-12 px-8 rounded-full bg-foreground text-background font-medium flex items-center gap-2 hover:opacity-90 transition-opacity"
-            >
-              {loading ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" />
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <Download size={20} />
-                  Download v{release?.version || APP_VERSION}
-                </>
-              )}
-            </Link>
-          )}
-          <Link
-            href="#features"
-            className="h-12 px-8 rounded-full border border-gray-200 dark:border-gray-800 font-medium flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors backdrop-blur-sm"
+      <div className="relative z-10 max-w-4xl mx-auto">
+        <div className="flex justify-center mb-8 fade-in-up fade-in-up-1">
+          <span
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs border"
+            style={{ fontFamily: 'var(--mono)', borderColor: 'var(--border-highlight)', color: 'var(--text-tertiary)', background: 'var(--bg-secondary)' }}
           >
-            Learn more <ArrowRight size={16} />
-          </Link>
-        </motion.div>
-
-        {/* App Preview */}
-        <div className="w-full px-4">
-          <AppPreview />
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--green)' }} />
+            Open source · MIT Licensed
+          </span>
         </div>
-      </div>
 
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none z-0">
-        <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] mix-blend-screen" />
-        <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[100px] mix-blend-screen" />
+        <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6 fade-in-up fade-in-up-2">
+          <span style={{ color: 'var(--text-primary)' }}>Backups that</span>
+          <br />
+          <span style={{ color: 'var(--accent)' }}>just work.</span>
+        </h1>
+
+        <p className="text-center text-base md:text-lg max-w-xl mx-auto mb-10 fade-in-up fade-in-up-3" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          Amber is a native backup app powered by rsync.
+          Time Machine-style snapshots, scheduled jobs, visual history —
+          all in a clean interface built with Tauri and Rust.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center fade-in-up fade-in-up-4">
+          <a
+            href={downloadUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm transition-all hover:brightness-110 glow-amber"
+            style={{ background: 'var(--accent)', color: 'var(--bg-primary)' }}
+          >
+            <Download size={16} />
+            Download v{APP_VERSION}
+          </a>
+          <Link
+            href="https://github.com/amber-sync/amber"
+            target="_blank"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-sm border transition-colors"
+            style={{ borderColor: 'var(--border-highlight)', color: 'var(--text-secondary)', background: 'var(--bg-secondary)' }}
+          >
+            <Github size={16} />
+            View source
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3 mt-10 fade-in-up fade-in-up-5">
+          {['Tauri v2', 'Rust', 'React 19', 'rsync', 'SQLite'].map(tech => (
+            <span
+              key={tech}
+              className="px-2.5 py-1 rounded text-xs"
+              style={{ fontFamily: 'var(--mono)', color: 'var(--text-muted)', background: 'var(--bg-tertiary)', border: '1px solid var(--border)' }}
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
       </div>
     </section>
   );
