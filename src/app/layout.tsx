@@ -13,11 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Amber — rsync backups for macOS",
-  description: "Time Machine-style incremental backups powered by rsync. Open source, native, fast.",
+  title: "Amber",
+  description: "A native backup application powered by rsync. Incremental snapshots, scheduled jobs, and point-in-time restore.",
   openGraph: {
-    title: "Amber — rsync backups for macOS",
-    description: "Time Machine-style incremental backups powered by rsync. Open source, native, fast.",
+    title: "Amber",
+    description: "A native backup application powered by rsync.",
     type: "website",
     url: "https://amber-sync.github.io",
   },
@@ -30,9 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>
     </html>
